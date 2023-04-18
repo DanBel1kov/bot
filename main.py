@@ -1,14 +1,22 @@
 from aiogram import Bot, Dispatcher, types, executor
+from CONSTANTS import HELP_COMMAND, START_MESSAGE, TOKEN_API
 
-TOKEN_API = "6156845668:AAG7Esqiw1MT9VBX0qZRnfMEmtCDYag3i-U"
 
 bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
 
-@dp.message_handler()
-async def echo_upper(message: types.Message):
-    await message.answer(message.text)
+@dp.message_handler(commands=['help'])
+async def help_command(message: types.Message):
+    await message.reply(text=HELP_COMMAND)
+
+
+@dp.message_handler(commands=['start'])
+async def help_command(message: types.Message):
+    first_name = message.from_user.first_name
+    username = message.from_user.username
+    await message.answer(text=START_MESSAGE(first_name))
+    await message.delete()
 
 
 if __name__ == '__main__':
