@@ -7,12 +7,14 @@ def readdata():
                 break
 
             line = line[:-1]
+            print(line.split(':'))
             name, id = line.split(':')
             userInfo = {}
             for i in range(0,5):
                 line = data.readline()[:-1]
+
                 first, second = line.split(':')
                 userInfo[first] = second
             Users[id] = userInfo
-            line = data.readline()
+            #line = data.readline()
     return Users
