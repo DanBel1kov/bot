@@ -2,16 +2,17 @@ import os
 import logging
 from aiogram import *
 # from aiogram import Bot
-# from CONSTANTS import *
+from CONSTANTS import *
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher import *
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-# from post import *
+from readusers import *
+from post import *
 import re
 
-API_TOKEN = "7079581856:AAGr7Ok7YOrteWI5noIXv-6HWlRvzpzk2Yg"
-CHAT_ID = "@hse_ivents_bot"
+API_TOKEN = ""
+CHAT_ID = ""
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,100 +20,6 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 dp.middleware.setup(LoggingMiddleware())
-
-
-def readdata():
-    Users = {}
-    if not os.path.exists('USERS.txt'):
-        with open('USERS.txt', 'w') as file:
-            pass
-    else:
-        with open('USERS.txt') as data:
-            while True:
-                line = data.readline()
-                if not line:
-                    break
-
-                line = line[:-1]
-                print(line.split(':'))
-                name, id = line.split(':')
-                userInfo = {}
-                for i in range(0, 5):
-                    line = data.readline()[:-1]
-
-                    first, second = line.split(':')
-                    userInfo[first] = second
-                Users[id] = userInfo
-                # line = data.readline()
-        return Users
-
-
-user_data = readdata()
-# user_data = {}
-file_name = "USERS.txt"
-ADMINS = []  # 832935844]
-admins_on = False
-# registered_users = []
-CUR_STATE = {}
-annonce = {}
-CUR_MESSAGE = []
-visitors = set()
-
-# CHANNEL_ID = -1001738772333
-# CHANNEL_LINK = 'https://t.me/ggrtcvnjj'
-
-HELP_COMMAND = """
-/start - перезапуск бота
-/help - список команд
-/register - пройти регистрацию
-/post - новый короткий пост
-/announce - создать подробный пост с тарифами
-               """
-
-
-def START_MESSAGE(name):
-    return "Привет, {}! {}".format(name, INTRO_TEXT)
-
-
-INTRO_TEXT = """
-Это бот для объявления событий или мероприятий в ВШЭ!
-Здесь ты можешь записаться на какой-то ивент, а также создать свой!
-Для начала работы бота необходимо зарегестрироваться. Введи /register и следуй инструкциям
-             """
-
-# NOT_SUBSCRIBED_MESSAGE = """
-# Для доступа к функционалу бота подпишитесь на группу
-#                          """
-# NOT_SUBSCRIBED_MESSAGE2 = """
-# Для продолжения вы должны подписаться на группу
-#                          """
-#
-# BANNED_TEXT = """
-# К сожалению, вы не соблюдали правила сообщества и поэтому доступ к боту вам запрещен.
-#               """
-
-REGISTRATION_MESSAGE_1 = """
-                         """
-REGISTRATION_MESSAGE_2 = """
-Для регистрации расскажи мне немного о себе:
-
-Как тебя зовут?
-(ФИО как в паспорте)
-                         """
-REGISTRATION_MESSAGE_3 = """
-Когда у тебя день рождения
-(формат: YYYY-MM-DD)
-                         """
-REGISTRATION_MESSAGE_4 = """
-Ваш номер телефона
-(формат: +70007777777)
-                         """
-REGISTRATION_MESSAGE_5 = """
-Твой пол
-(М/Ж)
-                         """
-
-CONFIRM_REGISTRATION_MSG = ("Спасибо, теперь вы есть в базе!")
 
 
 def is_valid_phone_number(phone_number):
@@ -139,88 +46,88 @@ async def help_command(message: types.Message):
     await message.answer(text=HELP_COMMAND)
 
 
-#
-#
-# #
-# # # ПРОВЕРКА ПОДПИСКИ begin
-# #
-#
-#
-
-# def check_channel_subscription(chat_member):
-#     if chat_member['status'] != 'left':
-#         return True
-#     else:
-#         return False
-#
-#
-# def banned(chat_member):
-#     if chat_member['status'] == 'kicked':
-#         return True
-#     else:
-#         return False
-#
-#
-# class ChannelMembershipMiddleware(BaseMiddleware):
-#     async def on_pre_process_message(self, message: types.Message, data: dict):
-#         first_name = message.from_user.first_name
-#         username = message.from_user.username
-#         user_id = message.from_user.id
-#         if message.text and message.text.startswith('/start'):
-#             return True
-#
-#         chat_member = await bot.get_chat_member(CHANNEL_ID, message.from_user.id)
-#
-#         if check_channel_subscription(chat_member):
-#             if banned(chat_member):
-#                 await message.answer(text=BANNED_TEXT)
-#                 bot.stop_polling()
-#                 return False
-#             else:
-#                 return True
-#         else:
-#             keyboard = InlineKeyboardMarkup(row_width=2).add(
-#
-#                 InlineKeyboardButton(text="Группа", url=CHANNEL_LINK),
-#                 InlineKeyboardButton(text= ('готово'),
-#                                      callback_data="verify_subscription")
-#             )
-#             await message.answer(text=NOT_SUBSCRIBED_MESSAGE, reply_markup=keyboard)
-#             bot.stop_polling()
-#             return False
-#
-#
-# dp.middleware.setup(ChannelMembershipMiddleware())
-
-
-# @dp.callback_query_handler(lambda c: c.data == "verify_subscription")
-# async def verify_subscription(callback_query: types.CallbackQuery):
-#     chat_member = await bot.get_chat_member(CHANNEL_ID, callback_query.from_user.id)
-#     if check_channel_subscription(chat_member):
-#         await bot.send_message(callback_query.message.chat.id,
-#                                text=("Я вижу что ты в теме"))
-#     else:
-#         keyboard = InlineKeyboardMarkup().add(
-#             InlineKeyboardButton("Verify Subscription", callback_data="verify_subscription"))
-#         await callback_query.answer(text=NOT_SUBSCRIBED_MESSAGE2, show_alert=True)
 
 
 #
-#
-# #
-# # # ПРОВЕРКА ПОДПИСКИ end
-# #
-#
+# # ПРОВЕРКА ПОДПИСКИ begin
 #
 
 
+
+def check_channel_subscription(chat_member):
+    if chat_member['status'] != 'left':
+        return True
+    else:
+        return False
+
+
+def banned(chat_member):
+    if chat_member['status'] == 'kicked':
+        return True
+    else:
+        return False
+
+
+class ChannelMembershipMiddleware(BaseMiddleware):
+    async def on_pre_process_message(self, message: types.Message, data: dict):
+        first_name = message.from_user.first_name
+        username = message.from_user.username
+        user_id = message.from_user.id
+        if message.text and message.text.startswith('/start'):
+            return True
+
+        chat_member = await bot.get_chat_member(CHANNEL_ID, message.from_user.id)
+
+        if check_channel_subscription(chat_member):
+            if banned(chat_member):
+                await message.answer(text=BANNED_TEXT)
+                bot.stop_polling()
+                return False
+            else:
+                return True
+        else:
+            keyboard = InlineKeyboardMarkup(row_width=2).add(
+
+                InlineKeyboardButton(text="Группа", url=CHANNEL_LINK),
+                InlineKeyboardButton(text= ('готово'),
+                                     callback_data="verify_subscription")
+            )
+            await message.answer(text=NOT_SUBSCRIBED_MESSAGE, reply_markup=keyboard)
+            bot.stop_polling()
+            return False
+
+
+dp.middleware.setup(ChannelMembershipMiddleware())
+
+
+@dp.callback_query_handler(lambda c: c.data == "verify_subscription")
+async def verify_subscription(callback_query: types.CallbackQuery):
+    chat_member = await bot.get_chat_member(CHANNEL_ID, callback_query.from_user.id)
+    if check_channel_subscription(chat_member):
+        await bot.send_message(callback_query.message.chat.id,
+                               text=("Я вижу что ты в теме"))
+    else:
+        keyboard = InlineKeyboardMarkup().add(
+            InlineKeyboardButton("Verify Subscription", callback_data="verify_subscription"))
+        await callback_query.answer(text=NOT_SUBSCRIBED_MESSAGE2, show_alert=True)
+
+
+
+
 #
+# # ПРОВЕРКА ПОДПИСКИ end
 #
-# #
-# # # РЕГИСТРАЦИЯ begin
-# #
+
+
+
+
+
+
 #
+# # РЕГИСТРАЦИЯ begin
 #
+
+
 
 def update_user_file(user_id, user_info, username):
     if not os.path.exists(file_name):
